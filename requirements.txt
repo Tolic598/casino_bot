@@ -1,2 +1,2 @@
 aiogram             3.3.0      
-python -m venv venv
+python3 -m venv myenv

@@ -18,11 +18,10 @@ class statistics(StatesGroup):
 
 @router.message(CommandStart())
 async def cmd_start(message: Message, state: FSMContext):
-    await state.set_state(statistics.suma)
     await message.answer("Бот подбирает провайдер и слоты которые играеют", reply_markup=slots)
     
 #3 Oaks Gaming
-@router.callback_query(statistics.suma, F.data == 'btn1')
+@router.callback_query(F.data == 'btn1')
 async def btn1(call: types.CallbackQuery, state: FSMContext):
     my_list_okks3 = ['SUN OF EGYPT 4', 'AZTEC FIRE 2', 'GOLD NUGGETS', 'OLAF VIKING', 'CRYSTAL SCARABS', 'GRAB MORE GOLD!', 'AFRICAN SPIRIT STICKY WILDS', '3 HOT CHILLIES', '777 COINS', 'Black Wolf 2', 'Little Farm', 'Green Chilli 2', 'FOREST SPIRIT', 'COIN VOLCANO', 'LADY FORTUNE', 'MUMMY POWER', 'TIGER GEMS', 'GRAB THE GOLD!', 'MORE MAGIC APPLE', 'EGYPT FIRE', 'YO-HO GOLD!', 'MAYA SUN', 'BOOM! BOOM! GOLD!', 'DRAGON WEALTH', 'SUNLIGHT PRINCESS', 'GODDESS OF EGYPT', 'RIO GEMS', 'HIT MORE GOLD!', 'STICKY PIGGY', 'GREEN CHILLI', 'BIG HEIST', 'AZTEC FIRE', 'LOTUS CHARM', 'EGGS OF GOLD', 'MAGIC APPLE 2', 'CAISHEN WEALTH', 'SUN OF EGYPT 3', 'PEARL DIVER 2: TREASURE CHEST', 'FISH REEF', 'QUEEN OF THE SUN', 'BOOK OF WIZARD: CRYSTAL CHANCE', 'BUDDHA MEGAWAYS', 'BLACK WOLF', 'CANDY BOOM', 'GOLD EXPRESS', 'LORD FORTUNE 2', 'BOOK OF WIZARD', 'TIGER JUNGLE', 'WOLF NIGHT', '3 COINS: EGYPT', 'PEARL DIVER', 'WUKONG', 'SCARAB BOOST', 'HIT THE GOLD!', 'AZTEC PYRAMID', 'MAGIC BALL: MULTICHANCE', 'MAGIC APPLE', 'SUPER RICH GOD', 'WOLF SAGA', '3 COINS', 'EYE OF GOLD', 'TIGER STONE', 'SUN OF EGYPT 2', 'SCARAB TEMPLE', 'THUNDER OF OLYMPUS', '15 DRAGON PEARLS', 'BUDDHA FORTUNE', 
     'SUPER MARBLE', 'AZTEC SUN', 'MOON SISTERS', 'BOOK OF SUN: CHOICE', 'GREAT PANDA', "TIGER'S GOLD", '777 GEMS RESPIN', 'SUN OF EGYPT', 'SCARAB RICHES', 'OLYMPIAN GODS', 'BOOK OF SUN: MULTICHANCE', 'DRAGON PEARLS', 'BOOK OF SUN']

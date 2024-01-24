@@ -93,3 +93,9 @@ slots_1 = InlineKeyboardMarkup(inline_keyboard=[
                                             [button31, button32],[button33, button34],
                                             [button35],
                                             ],row_width=2)
+
+# канал
+button1 = InlineKeyboardButton(text="Канал", url = "https://t.me/searchslot")
+button2 = InlineKeyboardButton(text="✔Проверить", callback_data="check")
+
+canal = InlineKeyboardMarkup(inline_keyboard=[[button1],[button2]],row_width=2)

@@ -1,4 +1,4 @@
-from aiogram import Dispatcher, types, Router, F
+from aiogram import Dispatcher, types, Router, F, Bot
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
@@ -8,12 +8,23 @@ from aiogram.filters.command import Command
 from aiogram.handlers import CallbackQueryHandler
 import random
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from keyboard.inline import slots
+from keyboard.inline import slots, canal
+from keyboard.keyboard import menu
 import time
+import datetime
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 import pymysql
 from pymysql.cursors import DictCursor
 import pymysql.cursors
 from config import host, user, password, db_name
+
+scheduler = AsyncIOScheduler(timezone='Europe/Moscow')
+start_time = time.time()
+
+dt = datetime.datetime.today().strftime('%d.%m %H:%M')
+end_time = (time.time()) - start_time
+
+print((f'Бот запущен\nДата запуска: {dt}\nВремя запуска: {round(end_time,1)} секунды\n'))
 
 try:
     connection = pymysql.connect(host = host,
@@ -34,25 +45,93 @@ class statistics(StatesGroup):
     prom = State()
 
 @router.message(CommandStart())
-async def cmd_start(message: Message, state: FSMContext):
+async def cmd_start(message: Message, state: FSMContext, bot):
     id = message.from_user.id
-    name = message.from_user.first_name
-    username = message.from_user.username
     suma = 0
     rate = 0
     prom = 0
+    pr_1 = 0
+    pr_2 = 0
+    pr_3 = 0
+    pr_4 = 0
+    pr_5 = 0
+    pr_6 = 0
+    pr_7 = 0
+    pr_8 = 0
+    pr_9 = 0
+    pr_10 = 0
+    pr_11 = 0
+    pr_12 = 0
+    pr_13 = 0
+    pr_14 = 0
+    pr_15 = 0
+    pr_16 = 0
+    pr_17 = 0
+    pr_18 = 0
+    pr_19 = 0
+    pr_20 = 0
     with connection.cursor() as cursors:
         cursors.execute(f"SELECT * FROM users WHERE id=%s",(id))
         if cursors.rowcount == 1:
             await message.answer("Введите сумму депозита в виде числа:")
             await state.set_state(statistics.suma)
         elif cursors.rowcount == 0:
-            cursors.execute('''INSERT IGNORE INTO users (id,suma,rate,prom)
-                VALUES(%d,%d,%d,%d)''' % (int(id),int(suma),int(rate),int(prom)))
-            await message.answer("Введите сумму депозита в виде числа:")
-            await state.set_state(statistics.suma)
+            chat_member = await bot.get_chat_member('@searchslot',id)
+            if chat_member.status == 'member' or chat_member.status == 'administrator' or chat_member.status == 'creator':
+                cursors.execute('''INSERT IGNORE INTO users (id,suma,rate,prom,pr_1,pr_2,pr_3,pr_4,pr_5,pr_6,pr_7,pr_8,pr_9,pr_10,pr_11,pr_12,pr_13,pr_14,pr_15,pr_16,pr_17,pr_18,pr_19,pr_20)
+                    VALUES(%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d)''' % (int(id),int(suma),int(rate),int(prom),int(pr_1),int(pr_2),int(pr_3),int(pr_4),int(pr_5),int(pr_6),int(pr_7),int(pr_8),int(pr_9),int(pr_10),int(pr_11),int(pr_12),int(pr_13),int(pr_14),int(pr_15),int(pr_16),int(pr_17),int(pr_18),int(pr_19),int(pr_20)))
+                await message.answer("Введите сумму депозита в виде числа:")
+                await state.set_state(statistics.suma)
+                setup(bot,id)
+            else:
+                await message.answer("Вcтупите в наш канал для просмотра статистики и новостей", reply_markup=canal)
     connection.commit()
-    # await message.answer("Бот подбирает провайдер и слоты которые играеют", reply_markup=slots)
+
+#Проверить подписку
+@router.callback_query(F.data == 'check')
+async def check(call: types.CallbackQuery, state: FSMContext, bot):
+    id = call.from_user.id
+    suma = 0
+    rate = 0
+    prom = 0
+    pr_1 = 0
+    pr_2 = 0
+    pr_3 = 0
+    pr_4 = 0
+    pr_5 = 0
+    pr_6 = 0
+    pr_7 = 0
+    pr_8 = 0
+    pr_9 = 0
+    pr_10 = 0
+    pr_11 = 0
+    pr_12 = 0
+    pr_13 = 0
+    pr_14 = 0
+    pr_15 = 0
+    pr_16 = 0
+    pr_17 = 0
+    pr_18 = 0
+    pr_19 = 0
+    pr_20 = 0
+    with connection.cursor() as cursors:
+        cursors.execute(f"SELECT * FROM users WHERE id=%s",(id))
+        if cursors.rowcount == 1:
+            await call.message.answer(f'Введите сумму депозита в виде числа:')
+            await state.set_state(statistics.suma)
+        elif cursors.rowcount == 0:
+            chat_member = await bot.get_chat_member('@botfazzer',id)
+            if chat_member.status == 'member' or chat_member.status == 'administrator' or chat_member.status == 'creator':
+                cursors.execute('''INSERT IGNORE INTO users (id,suma,rate,prom,pr_1,pr_2,pr_3,pr_4,pr_5,pr_6,pr_7,pr_8,pr_9,pr_10,pr_11,pr_12,pr_13,pr_14,pr_15,pr_16,pr_17,pr_18,pr_19,pr_20)
+                    VALUES(%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d)''' % (int(id),int(suma),int(rate),int(prom),int(pr_1),int(pr_2),int(pr_3),int(pr_4),int(pr_5),int(pr_6),int(pr_7),int(pr_8),int(pr_9),int(pr_10),int(pr_11),int(pr_12),int(pr_13),int(pr_14),int(pr_15),int(pr_16),int(pr_17),int(pr_18),int(pr_19),int(pr_20)))
+                await call.message.answer(f'Введите сумму депозита в виде числа:')
+                await state.set_state(statistics.suma)
+                setup(bot,id)
+                await call.message.delete()
+            else:
+                await call.message.answer(f'Вcтупите в наш канал для просмотра статистики и новостей', reply_markup=canal)
+                await call.message.delete()
+    connection.commit()
 
 @router.message(statistics.suma)
 async def process_name(message: Message, state: FSMContext):
@@ -64,12 +143,59 @@ async def process_name(message: Message, state: FSMContext):
     with connection.cursor() as cursors:
         cursors.execute(f"UPDATE users SET suma = {suma} WHERE id = {id}")
         if suma.isdigit():
-            await message.answer(f"Ваша сумма депозита: {suma}\nМы не несём ответственность за ваши средства!!!", reply_markup=slots)
+            await message.answer(f"Ваша сумма депозита: {suma}\nМы не несём ответственность за ваши средства!!!", reply_markup=menu)
             await state.clear()
         else:
             await message.answer("Введите сумму депозита в виде числа:")
             await state.set_state(statistics.suma)
     connection.commit()
+
+@router.message(F.text == "Слоты")
+async def profil(message: Message):
+    id = message.from_user.id
+    name = message.from_user.first_name
+    username = message.from_user.username
+    await message.answer(f"Выберете провайдер:", reply_markup=slots)
+
+@router.message(F.text == "Профиль")
+async def profil(message: Message):
+    id = message.from_user.id
+    name = message.from_user.first_name
+    username = message.from_user.username
+    await message.answer(f"Привет {name}, выберете провайдер,а бот вам выберет слот", reply_markup=slots)
+
+@router.message(F.text == "Статистика")
+async def profil(message: Message):
+    id = message.from_user.id
+    name = message.from_user.first_name
+    username = message.from_user.username
+    with connection.cursor() as cursors:
+        cursors.execute(f"SELECT * FROM users WHERE id={id}")
+        for row in cursors:
+            pr_1 = row['pr_1']
+            pr_2 = row['pr_2']
+            pr_3 = row['pr_3']
+            pr_4 = row['pr_4']
+            pr_5 = row['pr_5']
+            pr_6 = row['pr_6']
+            pr_7 = row['pr_7']
+            pr_8 = row['pr_8']
+            pr_9 = row['pr_9']
+            pr_10 = row['pr_10']
+            pr_11 = row['pr_11']
+            pr_12= row['pr_12']
+            pr_13 = row['pr_13']
+            pr_14 = row['pr_14']
+            pr_15 = row['pr_15']
+            pr_16 = row['pr_16']
+            await message.answer(f"Вот статистика по провайдерам в которые вы играли:\n3 Oaks Gaming: {pr_1}\nPragmaticPlay: {pr_2}\nBetSoft: {pr_3}\nRed Tiger: {pr_4}\nBig Time Gaming: {pr_5}\nRelax Gaming: {pr_6}\nPlay'n GO: {pr_7}\nPlayson: {pr_8}\nWazdan: {pr_9}\nAmatic: {pr_10}\nYggdrasil: {pr_11}\nNolimitCity: {pr_12}\nBGaming: {pr_13}\nEndorphina: {pr_14}\nQuickspin: {pr_15}\nHabanero: {pr_16}", reply_markup=menu)
+
+@router.message(F.text == "Поддержать проект")
+async def profil(message: Message):
+    id = message.from_user.id
+    name = message.from_user.first_name
+    username = message.from_user.username
+    await message.answer(f"Я буду рад вашей поддержке, все ваши донаты пойдут на развитие проекта и хостинг\nBinance pay: <code>294638367</code>\nUSDT сеть: Tron(TRC20): <code>TNr1U4DkWhR56B5sPh5AVBqszdtu4vyFrY</code>\n\nПишите мне в личное сообщение чтоб вы хотели увидеть в боте @codefarm ",reply_markup=menu, parse_mode='html')
 
 #3 Oaks Gaming
 @router.callback_query(F.data == 'btn1')
@@ -99,12 +225,14 @@ async def btn1_rate(message: Message, state: FSMContext):
                     bal = int(rate) - int(suma)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma + {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_1 = pr_1 + {bal} WHERE id = {id}")
                         await message.answer(f"Вы в + на: {bal}\n", reply_markup=slots)
                     connection.commit()
                 else:
                     bal = int(suma) - int(rate)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma - {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_1 = pr_1 - {bal} WHERE id = {id}")
                         await message.answer(f"Вы в - на: {bal}\n", reply_markup=slots)
                     connection.commit()
         else:
@@ -154,12 +282,14 @@ async def btn2_rate(message: Message, state: FSMContext):
                     bal = int(rate) - int(suma)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma + {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_2 = pr_2 + {bal} WHERE id = {id}")
                         await message.answer(f"Вы в + на: {bal}\n", reply_markup=slots)
                     connection.commit()
                 else:
                     bal = int(suma) - int(rate)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma - {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_2 = pr_2 - {bal} WHERE id = {id}")
                         await message.answer(f"Вы в - на: {bal}\n", reply_markup=slots)
                     connection.commit()
         else:
@@ -205,12 +335,14 @@ async def btn3_rate(message: Message, state: FSMContext):
                     bal = int(rate) - int(suma)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma + {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_3 = pr_3 + {bal} WHERE id = {id}")
                         await message.answer(f"Вы в + на: {bal}\n", reply_markup=slots)
                     connection.commit()
                 else:
                     bal = int(suma) - int(rate)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma - {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_3 = pr_3 - {bal} WHERE id = {id}")
                         await message.answer(f"Вы в - на: {bal}\n", reply_markup=slots)
                     connection.commit()
         else:
@@ -257,12 +389,14 @@ async def btn4_rate(message: Message, state: FSMContext):
                     bal = int(rate) - int(suma)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma + {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_4 = pr_4 + {bal} WHERE id = {id}")
                         await message.answer(f"Вы в + на: {bal}\n", reply_markup=slots)
                     connection.commit()
                 else:
                     bal = int(suma) - int(rate)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma - {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_4 = pr_4 - {bal} WHERE id = {id}")
                         await message.answer(f"Вы в - на: {bal}\n", reply_markup=slots)
                     connection.commit()
         else:
@@ -309,12 +443,14 @@ async def btn5_rate(message: Message, state: FSMContext):
                     bal = int(rate) - int(suma)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma + {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_5 = pr_5 + {bal} WHERE id = {id}")
                         await message.answer(f"Вы в + на: {bal}\n", reply_markup=slots)
                     connection.commit()
                 else:
                     bal = int(suma) - int(rate)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma - {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_5 = pr_5 - {bal} WHERE id = {id}")
                         await message.answer(f"Вы в - на: {bal}\n", reply_markup=slots)
                     connection.commit()
         else:
@@ -360,12 +496,14 @@ async def btn6_rate(message: Message, state: FSMContext):
                     bal = int(rate) - int(suma)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma + {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_6 = pr_6 + {bal} WHERE id = {id}")
                         await message.answer(f"Вы в + на: {bal}\n", reply_markup=slots)
                     connection.commit()
                 else:
                     bal = int(suma) - int(rate)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma - {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_6 = pr_6 - {bal} WHERE id = {id}")
                         await message.answer(f"Вы в - на: {bal}\n", reply_markup=slots)
                     connection.commit()
         else:
@@ -412,12 +550,14 @@ async def btn7_rate(message: Message, state: FSMContext):
                     bal = int(rate) - int(suma)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma + {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_7 = pr_7 + {bal} WHERE id = {id}")
                         await message.answer(f"Вы в + на: {bal}\n", reply_markup=slots)
                     connection.commit()
                 else:
                     bal = int(suma) - int(rate)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma - {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_7 = pr_7 - {bal} WHERE id = {id}")
                         await message.answer(f"Вы в - на: {bal}\n", reply_markup=slots)
                     connection.commit()
         else:
@@ -463,12 +603,14 @@ async def btn8_rate(message: Message, state: FSMContext):
                     bal = int(rate) - int(suma)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma + {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_8 = pr_8 + {bal} WHERE id = {id}")
                         await message.answer(f"Вы в + на: {bal}\n", reply_markup=slots)
                     connection.commit()
                 else:
                     bal = int(suma) - int(rate)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma - {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_8 = pr_8 - {bal} WHERE id = {id}")
                         await message.answer(f"Вы в - на: {bal}\n", reply_markup=slots)
                     connection.commit()
         else:
@@ -515,12 +657,14 @@ async def btn9_rate(message: Message, state: FSMContext):
                     bal = int(rate) - int(suma)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma + {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_9 = pr_9 + {bal} WHERE id = {id}")
                         await message.answer(f"Вы в + на: {bal}\n", reply_markup=slots)
                     connection.commit()
                 else:
                     bal = int(suma) - int(rate)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma - {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_9 = pr_9 - {bal} WHERE id = {id}")
                         await message.answer(f"Вы в - на: {bal}\n", reply_markup=slots)
                     connection.commit()
         else:
@@ -566,12 +710,14 @@ async def btn10_rate(message: Message, state: FSMContext):
                     bal = int(rate) - int(suma)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma + {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_10 = pr_10 + {bal} WHERE id = {id}")
                         await message.answer(f"Вы в + на: {bal}\n", reply_markup=slots)
                     connection.commit()
                 else:
                     bal = int(suma) - int(rate)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma - {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_10 = pr_10 - {bal} WHERE id = {id}")
                         await message.answer(f"Вы в - на: {bal}\n", reply_markup=slots)
                     connection.commit()
         else:
@@ -618,12 +764,14 @@ async def btn11_rate(message: Message, state: FSMContext):
                     bal = int(rate) - int(suma)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma + {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_11 = pr_11 + {bal} WHERE id = {id}")
                         await message.answer(f"Вы в + на: {bal}\n", reply_markup=slots)
                     connection.commit()
                 else:
                     bal = int(suma) - int(rate)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma - {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_11 = pr_11 - {bal} WHERE id = {id}")
                         await message.answer(f"Вы в - на: {bal}\n", reply_markup=slots)
                     connection.commit()
         else:
@@ -669,12 +817,14 @@ async def btn12_rate(message: Message, state: FSMContext):
                     bal = int(rate) - int(suma)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma + {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_12 = pr_12 + {bal} WHERE id = {id}")
                         await message.answer(f"Вы в + на: {bal}\n", reply_markup=slots)
                     connection.commit()
                 else:
                     bal = int(suma) - int(rate)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma - {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_12 = pr_12 - {bal} WHERE id = {id}")
                         await message.answer(f"Вы в - на: {bal}\n", reply_markup=slots)
                     connection.commit()
         else:
@@ -721,12 +871,14 @@ async def btn13_rate(message: Message, state: FSMContext):
                     bal = int(rate) - int(suma)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma + {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_13 = pr_13 + {bal} WHERE id = {id}")
                         await message.answer(f"Вы в + на: {bal}\n", reply_markup=slots)
                     connection.commit()
                 else:
                     bal = int(suma) - int(rate)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma - {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_13 = pr_13 - {bal} WHERE id = {id}")
                         await message.answer(f"Вы в - на: {bal}\n", reply_markup=slots)
                     connection.commit()
         else:
@@ -773,12 +925,14 @@ async def btn14_rate(message: Message, state: FSMContext):
                     bal = int(rate) - int(suma)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma + {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_14 = pr_14 + {bal} WHERE id = {id}")
                         await message.answer(f"Вы в + на: {bal}\n", reply_markup=slots)
                     connection.commit()
                 else:
                     bal = int(suma) - int(rate)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma - {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_14 = pr_14 - {bal} WHERE id = {id}")
                         await message.answer(f"Вы в - на: {bal}\n", reply_markup=slots)
                     connection.commit()
         else:
@@ -825,12 +979,14 @@ async def btn15_rate(message: Message, state: FSMContext):
                     bal = int(rate) - int(suma)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma + {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_15 = pr_15 + {bal} WHERE id = {id}")
                         await message.answer(f"Вы в + на: {bal}\n", reply_markup=slots)
                     connection.commit()
                 else:
                     bal = int(suma) - int(rate)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma - {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_15 = pr_15 - {bal} WHERE id = {id}")
                         await message.answer(f"Вы в - на: {bal}\n", reply_markup=slots)
                     connection.commit()
         else:
@@ -876,12 +1032,14 @@ async def btn16_rate(message: Message, state: FSMContext):
                     bal = int(rate) - int(suma)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma + {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_16 = pr_16 + {bal} WHERE id = {id}")
                         await message.answer(f"Вы в + на: {bal}\n", reply_markup=slots)
                     connection.commit()
                 else:
                     bal = int(suma) - int(rate)
                     with connection.cursor() as cursors:
                         cursors.execute(f"UPDATE users SET suma = suma - {bal} WHERE id = {id}")
+                        cursors.execute(f"UPDATE users SET pr_16 = pr_16 - {bal} WHERE id = {id}")
                         await message.answer(f"Вы в - на: {bal}\n", reply_markup=slots)
                     connection.commit()
         else:
@@ -1018,3 +1176,42 @@ async def btn17(call: types.CallbackQuery):
         
     await call.message.answer(f'Все кнопки востановлены', parse_mode='html',reply_markup = slots)
     await call.message.delete()
+
+async def send_channel_message(id,bot):
+    with connection.cursor() as cursors:
+        cursors.execute(f"SELECT SUM(pr_1),SUM(pr_2),SUM(pr_3),SUM(pr_4),SUM(pr_5),SUM(pr_6),SUM(pr_7),SUM(pr_8),SUM(pr_9),SUM(pr_10),SUM(pr_11),SUM(pr_12),SUM(pr_13),SUM(pr_14),SUM(pr_15),SUM(pr_16) FROM users")
+        result = cursors.fetchone()
+        chat_id = '@searchslot'
+        pr_1 = result['SUM(pr_1)']
+        pr_2 = result['SUM(pr_2)']
+        pr_3 = result['SUM(pr_3)']
+        pr_4 = result['SUM(pr_4)']
+        pr_5 = result['SUM(pr_5)']
+        pr_6 = result['SUM(pr_6)']
+        pr_7 = result['SUM(pr_7)']
+        pr_8 = result['SUM(pr_8)']
+        pr_9 = result['SUM(pr_9)']
+        pr_10 = result['SUM(pr_10)']
+        pr_11 = result['SUM(pr_11)']
+        pr_12 = result['SUM(pr_12)']
+        pr_13 = result['SUM(pr_13)']
+        pr_14 = result['SUM(pr_14)']
+        pr_15 = result['SUM(pr_15)']
+        pr_16 = result['SUM(pr_16)']
+        chat_member = await bot.get_chat_member('@searchslot',id)
+        if chat_member.status == 'member' or chat_member.status == 'administrator' or chat_member.status == 'creator':
+            await bot.send_message(chat_id, f'Статистика за 24 часа:\n3 Oaks Gaming: {pr_1}\nPragmaticPlay: {pr_2}\nBetSoft: {pr_3}\nRed Tiger: {pr_4}\nBig Time Gaming: {pr_5}\nRelax Gaming: {pr_6}\nPlay`n GO: {pr_7}\nPlayson: {pr_8}\nWazdan: {pr_9}\nAmatic: {pr_10}\nYggdrasil: {pr_11}\nNolimitCity: {pr_12}\nBGaming: {pr_13}\nEndorphina: {pr_14}\nQuickspin: {pr_15}\nHabanero: {pr_16}')
+        else:
+            await bot.send_message(id,'Вcтупите в наш канал для просмотра статистики и новостей', reply_markup=canal)
+    connection.commit()
+
+def setup(bot,id):
+    scheduler.add_job(send_channel_message, 'cron', hour=00, minute=00, args={id,bot})
+    scheduler.start()
+
+
+
+
+
+    # scheduler.add_job(send_channel_message, 'interval', seconds=3, args=[bot])
+    # scheduler.add_job(send_channel_message, 'cron', hour=22, minute=28, kwargs={"message": msg,"bot": bot})
